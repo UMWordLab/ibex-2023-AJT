@@ -3,50 +3,47 @@ var showProgressBar = false;
 
 var shuffleSequence = seq(
                             "setcounter",
-                            seq(rshuffle(startsWith("chow"))),
+                            sepWith("sep", rshuffle(startsWith("chow"))),
                             "sendresults"
                          )
+                         
+var defaults = [
+    "Separator", {
+        transfer: 1000,                                      // How long between sentences? (ms)
+        normalMessage: "Please wait for the next sentence."  // What is message presented between stims? Can be blank.
+    },
+    "AcceptabilityJudgment", {
+        as: ["1", "2", "3", "4", "5", "6", "7"],            /// What are options on Likert scale? Define both # of options and their labels.
+        presentAsScale: true,                               /// Should it be presented as a scale? 'true' or 'false'
+        instructions: "Use number keys or click boxes to answer.",    /// Brief instructions present on each trial
+        leftComment: "(Bad)", rightComment: "(Good)"        /// Labels on end-points of scale
+    }
+];
                          
 Template("Experiment.csv", row => {
     items.push(
         [[row.label, row.item] , "PennController", newTrial(
-            newText("sentence", row.sentence)
-                .center()
-                .css("margin", "25px")
-                .print(),
-                
-            newScale("acceptability", 7)
-                .before( newText("(very bad)") )
-                .after( newText("(very good)") )
-                .callback( getText("warning").hidden() )
-                .center()
-                .log()
-                .print(),
-        
-            newText("warning", "Please provide a judgment before you can continue")
-                .center()
-                .color("red")
-                .css("margin", "10px")
-                .hidden()
-                .print(),
-                
-            newButton("continue", "Proceed")
+            newController("AcceptabilityJudgment", {s: row.sentence,
+                            as: ["1", "2", "3", "4", "5", "6", "7"],  
+                            presentAsScale: true,                             
+                            instructions: "Use number keys or click boxes to answer.",    
+                            leftComment: "(Bad)", 
+                            rightComment: "(Good)"})
                 .print()
-                .center()
-                .css("margin", "25px")
-                .wait( getScale("acceptability").test.selected().failure(getText("warning").visible()) )
                 .log()
-    )
-    .log("sentence", row.sentence)
-    .log("counter", __counter_value_from_server__)
-    .log("label", row.label)
-    .log("latinitem", row.item)]
-    
-   );
+                .wait()
+        )
+        .log("sentence", row.sentence)
+        .log("counter", __counter_value_from_server__)
+        .log("label", row.label)
+        .log("latinitem", row.item)]
+    );
    return newTrial('_dummy_',null);
 })
 
 var items = [
+    
+    ["sep", "Separator", { }],
     
     ["setcounter", "__SetCounter__", { }],
  
