@@ -11,12 +11,6 @@ var defaults = [
     "Separator", {
         transfer: 1000,                                      // How long between sentences? (ms)
         normalMessage: "Please wait for the next sentence."  // What is message presented between stims? Can be blank.
-    },
-    "AcceptabilityJudgment", {
-        as: ["1", "2", "3", "4", "5", "6", "7"],            /// What are options on Likert scale? Define both # of options and their labels.
-        presentAsScale: true,                               /// Should it be presented as a scale? 'true' or 'false'
-        instructions: "Use number keys or click boxes to answer.",    /// Brief instructions present on each trial
-        leftComment: "(Bad)", rightComment: "(Good)"        /// Labels on end-points of scale
     }
 ];
                          
